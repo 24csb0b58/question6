@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Validation with Gender & DOB</title>
+    <style>
+        .error { color: red; font-size: 14px; }
+    </style>
+    <script>
+        function validateForm() {
+            let isValid = true;
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let age = document.getElementById("age").value;
+            let gender = document.querySelector('input[name="gender"]:checked');
+            let dob = document.getElementById("dob").value;
+
+            // Clear previous errors
+            document.getElementById("nameError").innerHTML = "";
+            document.getElementById("emailError").innerHTML = "";
+            document.getElementById("passwordError").innerHTML = "";
+            document.getElementById("ageError").innerHTML = "";
+            document.getElementById("genderError").innerHTML = "";
+            document.getElementById("dobError").innerHTML = "";
+
+            // Name validation
+            if (name.trim() === "") {
+                document.getElementById("nameError").innerHTML = "Name is required";
+                isValid = false;
+            }
+
+            // Email validation
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById("emailError").innerHTML = "Invalid email format";
+                isValid = false;
+            }
+
+            // Password validation (Minimum 6 characters)
+            if (password.length < 6) {
+                document.getElementById("passwordError").innerHTML = "Password must be at least 6 characters";
+                isValid = false;
+            }
+
+            // Age validation (Must be a number and at least 18)
+            if (isNaN(age) || age < 18) {
+                document.getElementById("ageError").innerHTML = "Must be a number and at least 18";
+                isValid = false;
+            }
+
+            // Gender validation
+            if (!gender) {
+                document.getElementById("genderError").innerHTML = "Please select a gender";
+                isValid = false;
+            }
+
+            // Date of Birth validation (User must be at least 18 years old)
+            if (dob === "") {
+                document.getElementById("dobError").innerHTML = "Date of Birth is required";
+                isValid = false;
+            } else {
+                let birthDate = new Date(dob);
+                let today = new Date();
+                let ageFromDOB = today.getFullYear() - birthDate.getFullYear();
+                let monthDiff = today.getMonth() - birthDate.getMonth();
+                let dayDiff = today.getDate() - birthDate.getDate();
+
+                if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                    ageFromDOB--;
+                }
+
+                if (ageFromDOB < 18) {
+                    document.getElementById("dobError").innerHTML = "You must be at least 18 years old";
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+    </script>
+</head>
+<body>
+
+<h2>Form Validation</h2>
+
+<form onsubmit="return validateForm()">
+    Name: <input type="text" id="name"> <span class="error" id="nameError"></span><br><br>
+
+    Email: <input type="text" id="email"> <span class="error" id="emailError"></span><br><br>
+
+    Password: <input type="password" id="password"> <span class="error" id="passwordError"></span><br><br>
+
+    Age: <input type="text" id="age"> <span class="error" id="ageError"></span><br><br>
+
+    Gender: 
+    <input type="radio" name="gender" value="Male"> Male
+    <input type="radio" name="gender" value="Female"> Female
+    <input type="radio" name="gender" value="Other"> Other
+    <span class="error" id="genderError"></span>
+    <br><br>
+
+    Date of Birth: <input type="date" id="dob"> <span class="error" id="dobError"></span><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
